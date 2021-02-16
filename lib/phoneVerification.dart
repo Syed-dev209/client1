@@ -1,13 +1,20 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:client1/dashboard.dart';
+import 'package:client1/models/userModel.dart';
 import 'package:client1/signInScreen.dart';
 import 'package:client1/successScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PhoneVerification extends StatelessWidget {
   final Widget goto;
   PhoneVerification({@required this.goto});
+  TextEditingController one=TextEditingController();
+  TextEditingController two=TextEditingController();
+  TextEditingController three=TextEditingController();
+  TextEditingController four=TextEditingController();
+  GlobalKey<FormState> _key=GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,110 +34,132 @@ class PhoneVerification extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 15.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'Enter the x-digit code sent to you at',
-                style: TextStyle(
-                    fontFamily: "Raleway",
-                    fontWeight: FontWeight.w700,
-                    fontSize: 32),
-              ),
-              Text(
-                '(559) 217-3152',
-                style: TextStyle(
-                    //fontFamily: "Raleway",
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF26A69A),
-                    fontSize: 32),
-              ),
-              SizedBox(
-                height: 40.0,
-              ),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                      child: TextFormField(
-                    obscureText: true,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
-                    cursorColor: Color(0XFF002B44),
-                    decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0XFF002B44))),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0XFF002B44))),
-                    ),
-                  )),
-                  SizedBox(
-                    width: 12.0,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                    obscureText: true,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
-                    cursorColor: Color(0XFF002B44),
-                    decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0XFF002B44))),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0XFF002B44))),
-                    ),
-                  )),
-                  SizedBox(
-                    width: 12.0,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                    obscureText: true,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
-                    cursorColor: Color(0XFF002B44),
-                    decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0XFF002B44))),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0XFF002B44))),
-                    ),
-                  )),
-                  SizedBox(
-                    width: 12.0,
-                  ),
-                  Expanded(
-                      child: TextFormField(
-                    obscureText: true,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
-                    cursorColor: Color(0XFF002B44),
-                    decoration: InputDecoration(
-                      enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0XFF002B44))),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Color(0XFF002B44))),
-                    ),
-                  )),
-                ],
-              ),
-              Expanded(
-                child: Align(
-                  alignment: FractionalOffset.bottomCenter,
-                  child: Center(
-                    child: TextButton(
-                        child:
-                            AutoSizeText('I haven\'t received a code, resend',style: TextStyle(
-                              color: Color(0xFF707070)
-                            ),),
-                      onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>goto));
-
-                      },
-                    ),
-                  ),
+          child: Form(
+            key: _key,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Enter the x-digit code sent to you at',
+                  style: TextStyle(
+                      fontFamily: "Raleway",
+                      fontWeight: FontWeight.w700,
+                      fontSize: 32),
                 ),
-              )
-            ],
+                Text(
+                  Provider.of<UserModel>(context,listen: false).getPhoneNumber,
+                  style: TextStyle(
+                      //fontFamily: "Raleway",
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF26A69A),
+                      fontSize: 32),
+                ),
+                SizedBox(
+                  height: 40.0,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: TextFormField(
+                          onChanged: (_) => FocusScope.of(context).nextFocus(),
+                          controller: one,
+                          maxLength: 1,
+                      obscureText: true,
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      cursorColor: Color(0XFF002B44),
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0XFF002B44))),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0XFF002B44))),
+                      ),
+                    )),
+                    SizedBox(
+                      width: 12.0,
+                    ),
+                    Expanded(
+                        child: TextFormField(
+                          onChanged: (_) => FocusScope.of(context).nextFocus(),
+                          controller: two,
+                          maxLength: 1,
+                      obscureText: true,
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      cursorColor: Color(0XFF002B44),
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0XFF002B44))),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0XFF002B44))),
+                      ),
+                    )),
+                    SizedBox(
+                      width: 12.0,
+                    ),
+                    Expanded(
+                        child: TextFormField(
+                          onChanged: (_) => FocusScope.of(context).nextFocus(),
+                          controller: three,
+                          maxLength: 1,
+                      obscureText: true,
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      cursorColor: Color(0XFF002B44),
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0XFF002B44))),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0XFF002B44))),
+                      ),
+                    )),
+                    SizedBox(
+                      width: 12.0,
+                    ),
+                    Expanded(
+                        child: TextFormField(
+                          onChanged: (value){
+                            String code= one.text+two.text+three.text+four.text;
+                            if(code=='1234')
+                              {
+                                Provider.of<UserModel>(context,listen: false).setUserProfile('Ilhan','Shah','ilhan@gmail.com', 'Model Colony, Karachi'); 
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>goto));
+                              }
+                          },
+                          controller: four,
+                          maxLength: 1,
+                      obscureText: true,
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      cursorColor: Color(0XFF002B44),
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0XFF002B44))),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0XFF002B44))),
+                      ),
+                    )),
+                  ],
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: FractionalOffset.bottomCenter,
+                    child: Center(
+                      child: TextButton(
+                          child:
+                              AutoSizeText('I haven\'t received a code, resend',style: TextStyle(
+                                color: Color(0xFF707070)
+                              ),),
+                        onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>goto));
+
+                        },
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

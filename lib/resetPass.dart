@@ -1,11 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:client1/enterEmployeeIdScreen.dart';
+import 'package:client1/models/userModel.dart';
 import 'package:client1/newPasswordScreen.dart';
 import 'package:client1/phoneVerification.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 
 class ResetPass extends StatelessWidget {
+  TextEditingController _empId=TextEditingController();
+  TextEditingController _phone=TextEditingController();
+  GlobalKey<FormState> _key=GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,75 +58,88 @@ class ResetPass extends StatelessWidget {
             onTap: (){
               FocusScope.of(context).requestFocus(FocusNode());
             },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  height: 30.0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                  child: Text(
-                    'Reset password',
-                    style: TextStyle(fontFamily: "Raleway", fontSize: 40.0),
-                  ),
-                ),
-                SizedBox(
-                  height: 40.0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                  child: TextFormField(
-                    keyboardType: TextInputType.name,
-                    cursorColor: Color(0XFF002B44),
-                    decoration:
-                        InputDecoration(hintText: "Enter your employee ID",
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Color(0XFF002B44))),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Color(0XFF002B44))),),
-                  ),
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                  child: TextFormField(
-                    keyboardType: TextInputType.phone,
-                    cursorColor: Color(0XFF002B44),
-                    decoration:
-                        InputDecoration(hintText: "Enter your phone number",
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Color(0XFF002B44))),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Color(0XFF002B44))),),
-                  ),
-                ),
-                SizedBox(
-                  height: 100.0,
-                ),
-                Center(
-                  child: RaisedButton(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 120.0, vertical: 15.0),
-                    child: Text(
-                      'Continue',
-                      style: TextStyle(
-                          fontFamily: "Raleway",
-                          fontWeight: FontWeight.w300,
-                          fontSize: 15),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40.0),
+              child: Form(
+                key: _key,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 30.0,
                     ),
-                    color: Color(0xFF26A69A),
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5)),
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>PhoneVerification(goto: NewPassword(),)));
-                    },
-                  ),
+                    Text(
+                      'Reset password',
+                      style: TextStyle(fontFamily: "Raleway", fontSize: 40.0),
+                    ),
+                    SizedBox(
+                      height: 40.0,
+                    ),
+                    TextFormField(
+                      controller: _empId,
+                      validator: MultiValidator([
+                        RequiredValidator(errorText: '*You must enter your Employee ID.')
+                      ]),
+                      keyboardType: TextInputType.name,
+                      cursorColor: Color(0XFF002B44),
+                      decoration:
+                          InputDecoration(hintText: "Enter your employee ID",
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Color(0XFF002B44))),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Color(0XFF002B44))),),
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    TextFormField(
+                      controller: _phone,
+                      validator: MultiValidator([
+                        RequiredValidator(errorText: '*You must enter Phone Number'),
+                        LengthRangeValidator(min: 12, max: 12, errorText: 'Mobile number must be of 12 digits.')
+                      ]),
+                      keyboardType: TextInputType.phone,
+                      cursorColor: Color(0XFF002B44),
+                      decoration:
+                          InputDecoration(hintText: "Enter your phone number",
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Color(0XFF002B44))),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Color(0XFF002B44))),),
+                    ),
+                    SizedBox(
+                      height: 100.0,
+                    ),
+                    Center(
+                      child: RaisedButton(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 100.0, vertical: 15.0),
+                        child: Text(
+                          'Continue',
+                          style: TextStyle(
+                              fontFamily: "Raleway",
+                              fontWeight: FontWeight.w300,
+                              fontSize: 15),
+                        ),
+                        color: Color(0xFF26A69A),
+                        textColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
+                        onPressed: () {
+                          if(_key.currentState.validate()) {
+                            Provider.of<UserModel>(context,listen: false).setEmployeeId(_empId.text);
+                            Provider.of<UserModel>(context,listen: false).setPhoneNumber(_phone.text);
+
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context) =>
+                                    PhoneVerification(goto: NewPassword(),)));
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

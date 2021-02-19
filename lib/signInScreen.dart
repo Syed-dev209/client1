@@ -79,6 +79,7 @@ class SignIn extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 40.0),
                           child: TextFormField(
+                            controller: _empId,
                             validator: MultiValidator([
                               RequiredValidator(errorText: '*You must enter your Employee ID')
                             ]),
@@ -97,6 +98,7 @@ class SignIn extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 40.0),
                           child: TextFormField(
+                            controller: _password,
                             validator: MultiValidator([
                               RequiredValidator(errorText: '*Fill you password'),
                               LengthRangeValidator(min: 8, max: 10, errorText: '*Password should be in the range of 8-10.')
@@ -132,6 +134,10 @@ class SignIn extends StatelessWidget {
                             onPressed: () {
                               if(_key.currentState.validate())
                               {
+                                print(_empId.text);
+                                print(_password.text);
+                                print(Provider.of<UserModel>(context,listen: false).getEmpId+'provider');
+                                print(Provider.of<UserModel>(context,listen: false).getPassword+'provider');
                                 final progress= ProgressHUD.of(context);
                                 if(_empId.text==Provider.of<UserModel>(context,listen: false).getEmpId&&_password.text==Provider.of<UserModel>(context,listen: false).getPassword){
                                   progress.showWithText('Please wait...');

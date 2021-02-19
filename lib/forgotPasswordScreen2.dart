@@ -90,8 +90,6 @@ class EnterNewPhoneNumber extends StatelessWidget {
                             Provider.of<UserModel>(context,listen: false).setPhoneNumber(_phoneNumber.text);
                             Navigator.push(context, MaterialPageRoute(builder: (context)=>PhoneVerification(goto: SuccessScreen(goto: DashBoard(),))));
                           }
-
-
                       },
                     ),
                   ),

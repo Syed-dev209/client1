@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:client1/components/filePicker.dart';
 import 'package:client1/thankyouScreen.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -15,6 +18,9 @@ class UploadHealthFile extends StatefulWidget {
 class _UploadHealthFileState extends State<UploadHealthFile> {
   bool checkedValue=false;
   DateTime selectedDate = DateTime.now();
+  PickFiles _filePick;
+  PlatformFile _testDoc;
+  bool filePicked= false;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -64,7 +70,7 @@ class _UploadHealthFileState extends State<UploadHealthFile> {
                         height: 8.0,
                       ),
                       AutoSizeText(
-                          'Uplaod your COVID-19 test results or \n any other health documentation to your employers',
+                          'Uplaod your COVID-19 test results or \nany other health documentation to your employers',
                       style: TextStyle(
                         fontSize: 16.0,
                         color: Color(0XFF606C83)
@@ -136,38 +142,55 @@ class _UploadHealthFileState extends State<UploadHealthFile> {
                       SizedBox(height: 10.0,),
                       Padding(
                         padding:  EdgeInsets.symmetric(horizontal: 20.0),
-                        child: DottedBorder(
-                          color: Color(0XFFCED6DC),
-                          borderType: BorderType.RRect,
-                          radius: Radius.circular(12),
-                          padding: EdgeInsets.all(6),
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.all(Radius.circular(12)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(height: 30.0,),
-                                  Center(
-                                    child: Image(
-                                      image: AssetImage('images/folder.PNG'),
-                                      height: 40.0,
-                                      width: 40.0,
+                        child: GestureDetector(
+                          onTap: ()async{
+                            _filePick=PickFiles();
+                            PlatformFile picked=await _filePick.pickTestDocuments();
+                            ///convert PlatformFile into File
+                            ///File file = File(PlatformFile.path);
+                            setState(() {
+                              filePicked=true;
+                              _testDoc=picked;
+                            });
+                          },
+                          child: DottedBorder(
+                            color: Color(0XFFCED6DC),
+                            borderType: BorderType.RRect,
+                            radius: Radius.circular(12),
+                            padding: EdgeInsets.all(6),
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.all(Radius.circular(12)),
+                                child: filePicked?
+                                ListTile(
+                                  leading: Icon(Icons.file_copy_sharp,size: 28.0,),
+                                  title:Text(_testDoc.name),
+                                )
+                                    :Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(height: 30.0,),
+                                    Center(
+                                      child: Image(
+                                        image: AssetImage('images/folder.PNG'),
+                                        height: 40.0,
+                                        width: 40.0,
+                                      ),
                                     ),
-                                  ),
-                                  TextButton(
-                                    child: Text('Upload Your Image Here',style: TextStyle(
-                                        color:Color(0XFFCED6DC),
-                                        decoration: TextDecoration.underline,
-                                        fontSize: 14.0
-                                    ),),
-                                    onPressed: (){
+                                    TextButton(
+                                      child: Text('Upload Your Image Here',style: TextStyle(
+                                          color:Color(0XFFCED6DC),
+                                          decoration: TextDecoration.underline,
+                                          fontSize: 14.0
+                                      ),),
+                                      onPressed: (){
 
-                                    },
-                                  ),
-                                  SizedBox(height: 30.0,)
-                                ],
-                              )
+                                      },
+                                    ),
+                                    SizedBox(height: 30.0,)
+                                  ],
+                                )
+                            ),
                           ),
                         )
                       ),

@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:client1/components/alertBox.dart';
 import 'package:client1/components/filePicker.dart';
+import 'package:client1/models/healthDocumentation.dart';
 import 'package:client1/thankyouScreen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class UploadHealthFile extends StatefulWidget {
@@ -21,6 +24,8 @@ class _UploadHealthFileState extends State<UploadHealthFile> {
   PickFiles _filePick;
   PlatformFile _testDoc;
   bool filePicked= false;
+  TextEditingController _fullName=TextEditingController();
+  GlobalKey<FormState> _key=GlobalKey<FormState>();
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -51,189 +56,208 @@ class _UploadHealthFileState extends State<UploadHealthFile> {
                 ),
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 25.0, horizontal: 10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 25.0,
-                      ),
-                      AutoSizeText(
-                        'Upload Health Documentation',
+                  child: Form(
+                    key: _key,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 25.0,
+                        ),
+                        AutoSizeText(
+                          'Upload Health Documentation',
+                          style: TextStyle(
+                              fontSize: 22.0,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0XFF002B44)),
+                          minFontSize: 12.0,
+                          maxLines: 1,
+                        ),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        AutoSizeText(
+                            'Uplaod your COVID-19 test results or \nany other health documentation to your employers',
                         style: TextStyle(
-                            fontSize: 22.0,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0XFF002B44)),
-                        minFontSize: 12.0,
-                        maxLines: 1,
-                      ),
-                      SizedBox(
-                        height: 8.0,
-                      ),
-                      AutoSizeText(
-                          'Uplaod your COVID-19 test results or \nany other health documentation to your employers',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Color(0XFF606C83)
-                      ),
-                        minFontSize: 8.0,
-                        maxLines: 3,
-                      ),
-
-                      SizedBox(height: 60.0,),
-                      Text('Full Name',style: TextStyle(
-                        color: Color(0XFF606C83)
-                      ),),
-                      SizedBox(height: 7.0,),
-                      TextFormField(
-                        keyboardType: TextInputType.name,
-                        cursorColor: Color(0XFF002B44),
-                        decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(
-                              color: Color(0XFF002B44),
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(
-                              color: Color(0XFFD7E1EA),
-                            ),
-                        ),
-                        )
-                      ),
-                      SizedBox(height: 30.0,),
-                      Text('Today\'s Date',style: TextStyle(
+                          fontSize: 16.0,
                           color: Color(0XFF606C83)
-                      ),),
-                      Container(
-                        width: 130.0,
-                        child: RaisedButton(
-                          padding: EdgeInsets.symmetric(vertical: 7.0,),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(7.0)
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.calendar_today_outlined,color: Color(0XFF72809D),),
-                              SizedBox(width: 10.0,),
-                              Text("${selectedDate.toLocal()}".split(' ')[0],style: TextStyle(
-                                color: Color(0XFF72809D)
-                              ),)
-                            ],
-                          ),
-                          color: Color(0XFFD7E1EA),
-                          onPressed: ()=>_selectDate(context),
                         ),
-                      ),
-                      SizedBox(height: 30.0,),
-                      Text('Upload File',style: TextStyle(
-                          fontSize: 16.0
-                      ),),
-                      SizedBox(
-                        height: 7.0,
-                      ),
-                      SizedBox(
-                        child: Divider(
-                          color: Colors.black26,
+                          minFontSize: 8.0,
+                          maxLines: 3,
                         ),
-                      ),
-                      SizedBox(height: 10.0,),
-                      Padding(
-                        padding:  EdgeInsets.symmetric(horizontal: 20.0),
-                        child: GestureDetector(
-                          onTap: ()async{
-                            _filePick=PickFiles();
-                            PlatformFile picked=await _filePick.pickTestDocuments();
-                            ///convert PlatformFile into File
-                            ///File file = File(PlatformFile.path);
-                            setState(() {
-                              filePicked=true;
-                              _testDoc=picked;
-                            });
-                          },
-                          child: DottedBorder(
-                            color: Color(0XFFCED6DC),
-                            borderType: BorderType.RRect,
-                            radius: Radius.circular(12),
-                            padding: EdgeInsets.all(6),
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.all(Radius.circular(12)),
-                                child: filePicked?
-                                ListTile(
-                                  leading: Icon(Icons.file_copy_sharp,size: 28.0,),
-                                  title:Text(_testDoc.name),
-                                )
-                                    :Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(height: 30.0,),
-                                    Center(
-                                      child: Image(
-                                        image: AssetImage('images/folder.PNG'),
-                                        height: 40.0,
-                                        width: 40.0,
+
+                        SizedBox(height: 60.0,),
+                        Text('Full Name',style: TextStyle(
+                          color: Color(0XFF606C83)
+                        ),),
+                        SizedBox(height: 7.0,),
+                        TextFormField(
+                          controller: _fullName,
+                          validator: MultiValidator([
+                            RequiredValidator(errorText: '*You must enter your name.')
+                          ]),
+                          keyboardType: TextInputType.name,
+                          cursorColor: Color(0XFF002B44),
+                          decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(
+                                color: Color(0XFF002B44),
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(
+                                color: Color(0XFFD7E1EA),
+                              ),
+                          ),
+                          )
+                        ),
+                        SizedBox(height: 30.0,),
+                        Text('Today\'s Date',style: TextStyle(
+                            color: Color(0XFF606C83)
+                        ),),
+                        Container(
+                          width: 130.0,
+                          child: RaisedButton(
+                            padding: EdgeInsets.symmetric(vertical: 7.0,),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(7.0)
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.calendar_today_outlined,color: Color(0XFF72809D),),
+                                SizedBox(width: 10.0,),
+                                Text("${selectedDate.toLocal()}".split(' ')[0],style: TextStyle(
+                                  color: Color(0XFF72809D)
+                                ),)
+                              ],
+                            ),
+                            color: Color(0XFFD7E1EA),
+                            onPressed: ()=>_selectDate(context),
+                          ),
+                        ),
+                        SizedBox(height: 30.0,),
+                        Text('Upload File',style: TextStyle(
+                            fontSize: 16.0
+                        ),),
+                        SizedBox(
+                          height: 7.0,
+                        ),
+                        SizedBox(
+                          child: Divider(
+                            color: Colors.black26,
+                          ),
+                        ),
+                        SizedBox(height: 10.0,),
+                        Padding(
+                          padding:  EdgeInsets.symmetric(horizontal: 20.0),
+                          child: GestureDetector(
+                            onTap: ()async{
+                              _filePick=PickFiles();
+                              PlatformFile picked=await _filePick.pickTestDocuments();
+                              ///convert PlatformFile into File
+                              ///File file = File(PlatformFile.path);
+                              setState(() {
+                                filePicked=true;
+                                _testDoc=picked;
+                              });
+                            },
+                            child: DottedBorder(
+                              color: Color(0XFFCED6DC),
+                              borderType: BorderType.RRect,
+                              radius: Radius.circular(12),
+                              padding: EdgeInsets.all(6),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                                  child: filePicked?
+                                  ListTile(
+                                    leading: Icon(Icons.file_copy_sharp,size: 28.0,),
+                                    title:Text(_testDoc.name),
+                                  )
+                                      :Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(height: 30.0,),
+                                      Center(
+                                        child: Image(
+                                          image: AssetImage('images/folder.PNG'),
+                                          height: 40.0,
+                                          width: 40.0,
+                                        ),
                                       ),
-                                    ),
-                                    TextButton(
-                                      child: Text('Upload Your Image Here',style: TextStyle(
+                                      Text('Upload Your Image Here',style: TextStyle(
                                           color:Color(0XFFCED6DC),
                                           decoration: TextDecoration.underline,
                                           fontSize: 14.0
                                       ),),
-                                      onPressed: (){
-
-                                      },
-                                    ),
-                                    SizedBox(height: 30.0,)
-                                  ],
-                                )
+                                      SizedBox(height: 30.0,)
+                                    ],
+                                  )
+                              ),
                             ),
+                          )
+                        ),
+                        CheckboxListTile(
+                         activeColor: Color(0XFF1BAAA0),
+                          title: Text("I acknowledge",style: TextStyle(
+                              color: Color(0XFF606C83)
+                          ),),
+                          value: checkedValue,
+                          onChanged: (newValue) {
+                            setState(() {
+                              checkedValue = newValue;
+                            });
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                        ),
+                        SizedBox(
+                          child: Divider(
+                            color: Colors.black26,
                           ),
+                        ),
+                        RaisedButton(
+                          padding: EdgeInsets.symmetric(vertical: 14.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Upload',style: TextStyle(
+                                  fontSize: 18.0
+                              ),),
+                            ],
+                          ),
+                          textColor: Colors.white,
+                          color: Color(0xFF1BAAA0),
+                          onPressed: ()async{
+                            if(_key.currentState.validate()){
+                              if(checkedValue&&filePicked) {
+                                HealthDocumentation test = HealthDocumentation(
+                                    testDoc: File(_testDoc.path),
+                                    fullName: _fullName.text,
+                                    date: selectedDate);
+                                bool check = await test.uploadResult();
+                                if (check) {
+                                  UploadDialogBox(context);
+                                }
+                              }
+                              else{
+                                AlertBoxes _alert=AlertBoxes();
+                                _alert.simpleAlertBox(context, Text('Incomplete Credentials'), Text('Fill all the fields '), (){
+                                  Navigator.pop(context);
+                                });
+                              }
+                            }
+                          },
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0)
+                          ),
+
                         )
-                      ),
-                      CheckboxListTile(
-                       activeColor: Color(0XFF1BAAA0),
-                        title: Text("I acknowledge",style: TextStyle(
-                            color: Color(0XFF606C83)
-                        ),),
-                        value: checkedValue,
-                        onChanged: (newValue) {
-                          setState(() {
-                            checkedValue = newValue;
-                          });
-                        },
-                        controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
-                      ),
-                      SizedBox(
-                        child: Divider(
-                          color: Colors.black26,
-                        ),
-                      ),
-                      RaisedButton(
-                        padding: EdgeInsets.symmetric(vertical: 14.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Upload',style: TextStyle(
-                                fontSize: 18.0
-                            ),),
-                          ],
-                        ),
-                        textColor: Colors.white,
-                        color: Color(0xFF1BAAA0),
-                        onPressed: (){
-                          UploadDialogBox(context);
-                        },
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0)
-                        ),
 
-                      )
-
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
